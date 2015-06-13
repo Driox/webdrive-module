@@ -151,6 +151,7 @@ public class WebDriverRunner {
 		DriverManager manager = new DriverManager();
 		List<Class<?>> driverClasses = manager.getDriverClasses();
 		boolean runSeleniumTest = new Boolean(Play.configuration.getProperty("webdrive.test.selenium.enable", "true"));
+		System.out.println("~ Selenium test enable : " + runSeleniumTest);
 
 		/* Run non-selenium tests */
 		runTestsWithDriver(HtmlUnitDriver.class, nonSeleniumTests);
@@ -162,8 +163,7 @@ public class WebDriverRunner {
 			}
 		}
 
-		File resultFile = new File(testResultRoot, "result."
-				+ (failed ? "failed" : "passed"));
+		File resultFile = new File(testResultRoot, "result." + (failed ? "failed" : "passed"));
 		resultFile.createNewFile();
 
 		return !failed;
@@ -209,12 +209,10 @@ public class WebDriverRunner {
 			webDriver.get(url);
 			int retry = 0;
 			while (retry < testTimeoutInSeconds) {
-				if (new File(testResultRoot, test.replace("/", ".")
-						+ ".passed.html").exists()) {
+				if (new File(testResultRoot, test.replace("/", ".") + ".passed.html").exists()) {
 					System.out.print("PASSED      ");
 					break;
-				} else if (new File(testResultRoot, test.replace("/", ".")
-						+ ".failed.html").exists()) {
+				} else if (new File(testResultRoot, test.replace("/", ".") + ".failed.html").exists()) {
 					System.out.print("FAILED   !  ");
 					ok = false;
 					break;
