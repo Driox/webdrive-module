@@ -147,11 +147,25 @@ public class WebDriverRunner {
 		}
 	}
 
+	private boolean isRunSeleniumTestEnable() {
+		boolean runSeleniumTest = true;
+
+		try {
+			String config = System.getProperty("webdrive.test.selenium.enable", "true");
+			System.out.println("config : " + config);
+			runSeleniumTest = new Boolean(config);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("~ Selenium test enable : " + runSeleniumTest);
+		return runSeleniumTest;
+	}
+
 	private boolean run() throws Exception {
 		DriverManager manager = new DriverManager();
 		List<Class<?>> driverClasses = manager.getDriverClasses();
-		boolean runSeleniumTest = new Boolean(Play.configuration.getProperty("webdrive.test.selenium.enable", "true"));
-		System.out.println("~ Selenium test enable : " + runSeleniumTest);
+		boolean runSeleniumTest = isRunSeleniumTestEnable();
 
 		/* Run non-selenium tests */
 		runTestsWithDriver(HtmlUnitDriver.class, nonSeleniumTests);
@@ -171,7 +185,7 @@ public class WebDriverRunner {
 
 	private void configHtmlUnit(WebDriver webDriver) {
 		if (webDriver instanceof HtmlUnitDriver) {
-			boolean activeJs = new Boolean(Play.configuration.getProperty("webdrive.htmlunit.js.enable", "false"));
+			boolean activeJs = new Boolean(System.getProperty("webdrive.htmlunit.js.enable", "false"));
 			HtmlUnitDriver htmlunitDriver = (HtmlUnitDriver) webDriver;
 			htmlunitDriver.setJavascriptEnabled(activeJs);
 		}
