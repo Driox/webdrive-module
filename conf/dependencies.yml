@@ -1,0 +1,5 @@
+self: play -> webdrive 0.3
+
+require:
+    - play
+    - org.seleniumhq.selenium -> selenium-java 2.5.0
