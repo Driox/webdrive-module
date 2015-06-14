@@ -100,7 +100,6 @@ def test(app, args):
     java_cmd = [app.java_path(), '-classpath', cp_args,
     	'-Dwebdrive.classes=%s' % app.readConf('webdrive.classes'),
     	'-Dwebdrive.timeout=%s' % app.readConf('webdrive.timeout'),
-    	'-Dwebdrive.test.selenium.enable=%s' % app.readConf('webdrive.test.selenium.enable'),
     	'-Dwebdrive.htmlunit.js.enable=%s' % app.readConf('webdrive.htmlunit.js.enable'),
     	'-Dapplication.url=%s://localhost:%s' % (protocol, http_port),
     	'play.modules.webdrive.WebDriverRunner']
