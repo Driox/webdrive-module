@@ -20,10 +20,11 @@ import urllib2
 
 from play.utils import *
 
-COMMANDS = [ 'webdrive:test' ]
+COMMANDS = [ 'webdrive:test', 'webdrive:test-selenium' ]
 
 HELP = {
-    'webdrive:test': 'Run tests using Selenium 2 WebDriver'
+    'webdrive:test': 'Run tests using Selenium 2 WebDriver',
+    'webdrive:test-selenium': 'Run tests using Selenium 2 WebDriver'
 }
 
 def execute(**kargs):
@@ -32,9 +33,12 @@ def execute(**kargs):
     args = kargs.get("args")
 
     if command == 'webdrive:test':
-        test(app, args)
+        test(app, args, 'false')
 
-def test(app, args):
+    if command == 'webdrive:test-selenium':
+        test(app, args, 'true')
+
+def test(app, args, seleniumEnabled):
     app.check()
 
     # If framework-id is not a valid test-id, force it to 'test'
@@ -98,11 +102,12 @@ def test(app, args):
     if os.name == 'nt':
         cp_args = ';'.join(wdcp)    
     java_cmd = [app.java_path(), '-classpath', cp_args,
-    	'-Dwebdrive.classes=%s' % app.readConf('webdrive.classes'),
-    	'-Dwebdrive.timeout=%s' % app.readConf('webdrive.timeout'),
-    	'-Dwebdrive.htmlunit.js.enable=%s' % app.readConf('webdrive.htmlunit.js.enable'),
-    	'-Dapplication.url=%s://localhost:%s' % (protocol, http_port),
-    	'play.modules.webdrive.WebDriverRunner']
+        '-Dwebdrive.classes=%s' % app.readConf('webdrive.classes'),
+        '-Dwebdrive.timeout=%s' % app.readConf('webdrive.timeout'),
+        '-Dwebdrive.test.selenium.enable=%s' % seleniumEnabled,
+        '-Dwebdrive.htmlunit.js.enable=%s' % app.readConf('webdrive.htmlunit.js.enable'),
+        '-Dapplication.url=%s://localhost:%s' % (protocol, http_port),
+        'play.modules.webdrive.WebDriverRunner']
     try:
         subprocess.call(java_cmd, env=os.environ)
     except OSError:
