@@ -116,6 +116,7 @@ def test(app, args):
         '-Dwebdrive.classes=%s' % app.readConf('webdrive.classes'),
         '-Dwebdrive.timeout=%s' % app.readConf('webdrive.timeout'),
         '-Dwebdrive.htmlunit.js.enable=%s' % app.readConf('webdrive.htmlunit.js.enable'),
+        '-Dapplication.baseUrl=%s' % app.readConf('webdrive.test.base.url'),
         '-Dapplication.url=%s://localhost:%s' % (protocol, http_port),
         'play.modules.webdrive.WebDriverRunner']
     try:

@@ -93,7 +93,9 @@ public class WebDriverRunner {
 	private int maxTestNameLength;
 
 	public WebDriverRunner() {
-		this.appUrlBase = System.getProperty("application.url", DEFAULT_APP_URL);
+		this.appUrlBase = System.getProperty("application.baseUrl", DEFAULT_APP_URL);
+		System.out.println("~ Using a base url value of " + this.appUrlBase);
+		
 		String timeoutStr = System.getProperty("webdrive.timeout", DEFAULT_TEST_TIMEOUT);
 		try {
 			if (timeoutStr == null || timeoutStr.trim().equals("")) {
