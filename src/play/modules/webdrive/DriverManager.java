@@ -44,7 +44,7 @@ public class DriverManager {
 		simpleDriverNames.put("chrome", ChromeDriver.class);
 		simpleDriverNames.put("firefox", FirefoxDriver.class);
 		simpleDriverNames.put("ie", InternetExplorerDriver.class);
-		simpleDriverNames.put("phantomJs", PhantomJSDriver.class);
+		simpleDriverNames.put("phantomjs", PhantomJSDriver.class);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class DriverManager {
 	public List<Class<?>> getDriverClasses() {
 		List<Class<?>> drivers = new ArrayList<Class<?>>();
 		String driversProp = System.getProperty("webdrive.classes");
-		if (driversProp == null || driversProp.trim().isEmpty()) {
+		if (driversProp == null || driversProp.trim().toLowerCase().isEmpty()) {
 			return drivers;
 		}
 
@@ -66,16 +66,13 @@ public class DriverManager {
 			}
 
 			if (clazz == null || !WebDriver.class.isAssignableFrom(clazz)) {
-				System.out.println("~ " + driver +
-					" is not a valid WebDriver implementation.");
+				System.out.println("~ " + driver + " is not a valid WebDriver implementation.");
 				continue;
 			}
 
 			/* Skip IE if we are not on windows */
-			if (InternetExplorerDriver.class.equals(clazz) &&
-				!System.getProperty("os.name").startsWith("Windows")) {
-				System.out.println("~ Cannot test with IE on " +
-					System.getProperty("os.name"));
+			if (InternetExplorerDriver.class.equals(clazz) && !System.getProperty("os.name").startsWith("Windows")) {
+				System.out.println("~ Cannot test with IE on " + System.getProperty("os.name"));
 				continue;
 			}
 

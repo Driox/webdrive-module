@@ -33,12 +33,9 @@ def execute(**kargs):
     args = kargs.get("args")
 
     if command == 'webdrive:test':
-        test(app, args, 'false')
+        test(app, args)
 
-    if command == 'webdrive:test-selenium':
-        test(app, args, 'true')
-
-def test(app, args, seleniumEnabled):
+def test(app, args):
     app.check()
 
     # If framework-id is not a valid test-id, force it to 'test'
@@ -68,6 +65,20 @@ def test(app, args, seleniumEnabled):
         opener.open('http://localhost:%s/@kill' % http_port)
     except Exception, e:
         pass
+
+    # read parameters
+    add_options = []        
+    if args.count('--unit'):
+        args.remove('--unit')
+        add_options.append('-DrunUnitTests=true')
+            
+    if args.count('--functional'):
+        args.remove('--functional')
+        add_options.append('-DrunFunctionalTests=true')
+            
+    if args.count('--selenium'):
+        args.remove('--selenium')
+        add_options.append('-DrunSeleniumTests=true')
 
     # Run app
     test_result = os.path.join(app.path, 'test-result')
@@ -101,10 +112,9 @@ def test(app, args, seleniumEnabled):
     cp_args = ':'.join(wdcp)
     if os.name == 'nt':
         cp_args = ';'.join(wdcp)    
-    java_cmd = [java_path(), '-classpath', cp_args,
+    java_cmd = [java_path()] + add_options + ['-classpath', cp_args,
         '-Dwebdrive.classes=%s' % app.readConf('webdrive.classes'),
         '-Dwebdrive.timeout=%s' % app.readConf('webdrive.timeout'),
-        '-Dwebdrive.test.selenium.enable=%s' % seleniumEnabled,
         '-Dwebdrive.htmlunit.js.enable=%s' % app.readConf('webdrive.htmlunit.js.enable'),
         '-Dapplication.url=%s://localhost:%s' % (protocol, http_port),
         'play.modules.webdrive.WebDriverRunner']
