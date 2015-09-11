@@ -211,8 +211,9 @@ public class WebDriverRunner {
 
 	private void runTestsWithDriver(Class<?> webDriverClass, List<String> tests, int nbOfRetry)
 			throws Exception {
+		System.out.println("\n\n~~~~~~~~~~~~~\n\n");
 		System.out.println("~ Starting tests with " + webDriverClass);
-		System.out.println("~ Retry #  " + nbOfRetry + " / " + NUMBER_OF_RETRY);
+		System.out.println("~ Retry #  " + (nbOfRetry + 1) + " / " + NUMBER_OF_RETRY);
 
 		WebDriver webDriver = (WebDriver) webDriverClass.newInstance();
 		configHtmlUnit(webDriver);
