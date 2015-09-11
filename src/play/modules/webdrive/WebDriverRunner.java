@@ -276,7 +276,8 @@ public class WebDriverRunner {
 		saveTestResults(webDriver.getClass().getSimpleName());
 		if (!failedTest.isEmpty()) {
 			if (nbOfRetry < NUMBER_OF_RETRY) {
-				runTestsWithDriver(webDriverClass, failedTest, nbOfRetry++);
+				nbOfRetry += 1;
+				runTestsWithDriver(webDriverClass, failedTest, nbOfRetry);
 			} else {
 				failed = true;
 			}
