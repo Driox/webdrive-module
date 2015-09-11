@@ -28,9 +28,16 @@ import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import com.google.common.collect.Lists;
+
 import play.Play;
 
 public class WebDriverRunner {
+
+	/**
+	 * Number of time we retry failing tests
+	 */
+	private static final int NUMBER_OF_RETRY = 3;
 
 	/**
 	 * Default URL of the play app.
@@ -155,13 +162,13 @@ public class WebDriverRunner {
 
 		/* Run non-selenium tests */
 		if (runUnitAndFunctionnalTest) {
-			runTestsWithDriver(HtmlUnitDriver.class, nonSeleniumTests);
+			runTestsWithDriver(HtmlUnitDriver.class, nonSeleniumTests, 0);
 		}
 
 		/* Run selenium tests on all browsers */
 		if (runSeleniumTest) {
 			for (Class<?> driverClass : driverClasses) {
-				runTestsWithDriver(driverClass, seleniumTests);
+				runTestsWithDriver(driverClass, seleniumTests, 0);
 			}
 		}
 
@@ -170,15 +177,15 @@ public class WebDriverRunner {
 
 		return !failed;
 	}
-	
+
 	private boolean isRunUniAndFunctionnelTestEnable() {
 		return loadBooleanConfig("runUnitTests");
 	}
-	
+
 	private boolean isRunSeleniumTestEnable() {
 		return loadBooleanConfig("runSeleniumTests") || loadBooleanConfig("webdrive.htmlunit.js.enable");
 	}
-	
+
 	private boolean loadBooleanConfig(String systemKey) {
 		boolean result = true;
 
@@ -200,15 +207,17 @@ public class WebDriverRunner {
 		}
 	}
 
-	private void runTestsWithDriver(Class<?> webDriverClass, List<String> tests)
+	private void runTestsWithDriver(Class<?> webDriverClass, List<String> tests, int nbOfRetry)
 			throws Exception {
 		System.out.println("~ Starting tests with " + webDriverClass);
+		System.out.println("~ Retry #  " + nbOfRetry + " / " + NUMBER_OF_RETRY);
+
 		WebDriver webDriver = (WebDriver) webDriverClass.newInstance();
 		configHtmlUnit(webDriver);
 
 		webDriver.get(appUrlBase + "/@tests/init");
 
-		boolean ok = true;
+		List<String> failedTest = Lists.newArrayList();
 		for (String test : tests) {
 			long start = System.currentTimeMillis();
 			String testName = test.replace(".class", "")
@@ -237,13 +246,12 @@ public class WebDriverRunner {
 					break;
 				} else if (new File(testResultRoot, test.replace("/", ".") + ".failed.html").exists()) {
 					System.out.print("FAILED   !  ");
-					ok = false;
+					failedTest.add(test);
 					break;
 				} else {
 					retry++;
 					if (retry == testTimeoutInSeconds) {
 						System.out.print("TIMEOUT  ?  ");
-						ok = false;
 						break;
 					} else {
 						Thread.sleep(1000);
@@ -262,12 +270,17 @@ public class WebDriverRunner {
 				System.out.println(seconds + "s");
 			}
 		}
-		webDriver.get(appUrlBase + "/@tests/end?result=" + (ok ? "passed" : "failed"));
+		webDriver.get(appUrlBase + "/@tests/end?result=" + (failedTest.isEmpty() ? "passed" : "failed"));
 		webDriver.quit();
 
 		saveTestResults(webDriver.getClass().getSimpleName());
-		if (!ok)
-			failed = true;
+		if (!failedTest.isEmpty()) {
+			if (nbOfRetry < NUMBER_OF_RETRY) {
+				runTestsWithDriver(webDriverClass, failedTest, nbOfRetry++);
+			} else {
+				failed = true;
+			}
+		}
 	}
 
 	/**
