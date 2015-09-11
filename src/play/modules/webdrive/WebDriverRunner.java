@@ -37,7 +37,7 @@ public class WebDriverRunner {
 	/**
 	 * Number of time we retry failing tests
 	 */
-	private static final int NUMBER_OF_RETRY = 3;
+	private static final Integer DEFAULT_NUMBER_OF_RETRY = 3;
 
 	/**
 	 * Default URL of the play app.
@@ -92,7 +92,11 @@ public class WebDriverRunner {
 	private List<String> nonSeleniumTests = new ArrayList<String>();
 	private int maxTestNameLength;
 
+	private int numberOfRetryMax = DEFAULT_NUMBER_OF_RETRY;
+	
 	public WebDriverRunner() {
+		this.numberOfRetryMax = Integer.valueOf(System.getProperty("webdrive.test.retry", DEFAULT_NUMBER_OF_RETRY.toString()));
+		
 		this.appUrlBase = System.getProperty("application.baseUrl", DEFAULT_APP_URL);
 		System.out.println("~ Using a base url value of " + this.appUrlBase);
 		
@@ -213,7 +217,7 @@ public class WebDriverRunner {
 			throws Exception {
 		System.out.println("\n\n~~~~~~~~~~~~~\n\n");
 		System.out.println("~ Starting tests with " + webDriverClass);
-		System.out.println("~ Retry #  " + (nbOfRetry + 1) + " / " + NUMBER_OF_RETRY);
+		System.out.println("~ Retry #  " + (nbOfRetry + 1) + " / " + numberOfRetryMax);
 
 		WebDriver webDriver = (WebDriver) webDriverClass.newInstance();
 		configHtmlUnit(webDriver);
@@ -278,7 +282,7 @@ public class WebDriverRunner {
 
 		saveTestResults(webDriver.getClass().getSimpleName());
 		if (!failedTest.isEmpty()) {
-			if (nbOfRetry < NUMBER_OF_RETRY) {
+			if (nbOfRetry < numberOfRetryMax) {
 				nbOfRetry += 1;
 				runTestsWithDriver(webDriverClass, failedTest, nbOfRetry);
 			} else {
