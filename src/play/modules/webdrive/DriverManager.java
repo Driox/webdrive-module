@@ -18,18 +18,18 @@
 
 package play.modules.webdrive;
 
+import java.lang.ref.PhantomReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.iphone.IPhoneDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 
 /**
  * Manages {@link WebDriver} instances to use for testing.
@@ -41,11 +41,10 @@ public class DriverManager {
 		new HashMap<String, Class<? extends WebDriver>>();
 	static {
 		simpleDriverNames.put("htmlunit", HtmlUnitDriver.class);
-		simpleDriverNames.put("android", AndroidDriver.class);
 		simpleDriverNames.put("chrome", ChromeDriver.class);
 		simpleDriverNames.put("firefox", FirefoxDriver.class);
 		simpleDriverNames.put("ie", InternetExplorerDriver.class);
-		simpleDriverNames.put("iphone", IPhoneDriver.class);
+		simpleDriverNames.put("phantomJs", PhantomJSDriver.class);
 	}
 
 	/**

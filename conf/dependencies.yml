@@ -1,5 +1,13 @@
-self: play -> webdrive 0.3
+self: play -> webdrive 0.4
 
 require:
     - play 1.2.7
-    - org.seleniumhq.selenium -> selenium-java 2.5.0
+    #otherwise it brings netty 3.5.2 that's conflict with play internal dependencies
+    - org.seleniumhq.selenium -> selenium-java 2.47.1:
+        exclude:
+          - io.netty -> *
+    # cf. https://code.google.com/p/selenium/issues/detail?id=8088          
+    - com.codeborne -> phantomjsdriver 1.2.1:
+        exclude:
+          - org.seleniumhq.selenium -> *
+          - org.seleniumhq.selenium -> *

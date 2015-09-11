@@ -101,7 +101,7 @@ def test(app, args, seleniumEnabled):
     cp_args = ':'.join(wdcp)
     if os.name == 'nt':
         cp_args = ';'.join(wdcp)    
-    java_cmd = [app.java_path(), '-classpath', cp_args,
+    java_cmd = [java_path(), '-classpath', cp_args,
         '-Dwebdrive.classes=%s' % app.readConf('webdrive.classes'),
         '-Dwebdrive.timeout=%s' % app.readConf('webdrive.timeout'),
         '-Dwebdrive.test.selenium.enable=%s' % seleniumEnabled,

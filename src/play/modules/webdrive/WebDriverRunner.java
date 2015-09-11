@@ -165,10 +165,13 @@ public class WebDriverRunner {
 	private boolean run() throws Exception {
 		DriverManager manager = new DriverManager();
 		List<Class<?>> driverClasses = manager.getDriverClasses();
-		boolean runSeleniumTest = isRunSeleniumTestEnable();
+		boolean runUnitAndFunctionnalTest = false;
+		boolean runSeleniumTest = true; //isRunSeleniumTestEnable();
 
 		/* Run non-selenium tests */
-		runTestsWithDriver(HtmlUnitDriver.class, nonSeleniumTests);
+		if (runUnitAndFunctionnalTest) {
+			runTestsWithDriver(HtmlUnitDriver.class, nonSeleniumTests);
+		}
 
 		/* Run selenium tests on all browsers */
 		if (runSeleniumTest) {
