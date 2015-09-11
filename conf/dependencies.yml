@@ -1,4 +1,4 @@
-self: play -> webdrive 0.4
+self: particeep -> webdrive 0.4
 
 require:
     - play 1.2.7
