@@ -32,8 +32,7 @@ def execute(**kargs):
     app = kargs.get("app")
     args = kargs.get("args")
 
-    if command == 'webdrive:test':
-        test(app, args)
+    test(app, args)
 
 def test(app, args):
     app.check()
@@ -79,6 +78,17 @@ def test(app, args):
     if args.count('--selenium'):
         args.remove('--selenium')
         add_options.append('-DrunSeleniumTests=true')
+
+	try:                                
+		opts, args = getopt.getopt(args, "p:", ["phantomjs="])
+	except getopt.GetoptError:          
+		print "~ No PhantomJs execution path define. You can specified it with -p <path> or --phantomjs=<path>"
+
+	for opt, arg in opts:                
+		if opt in ("--phantomjs"):      
+			add_options.append('-Dphantomjs.binary.path=' + arg)
+			print "~ use phantomjs path : " + arg
+			print "~~~~~"
 
     # Run app
     test_result = os.path.join(app.path, 'test-result')

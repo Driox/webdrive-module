@@ -30,8 +30,6 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import com.google.common.collect.Lists;
 
-import play.Play;
-
 public class WebDriverRunner {
 
 	/**
