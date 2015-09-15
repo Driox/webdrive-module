@@ -80,15 +80,15 @@ def test(app, args):
         add_options.append('-DrunSeleniumTests=true')
 
 	try:                                
-		opts, args = getopt.getopt(args, "p:", ["phantomjs="])
+		opts, args2 = getopt.getopt(args, "p:", ["phantomjs="])
+		for opt, arg in opts:                
+			if opt in ("--phantomjs"):      
+				add_options.append('-Dphantomjs.binary.path=' + arg)
+				print "~ use phantomjs path : " + arg
+				print "~~~~~"
+
 	except getopt.GetoptError:          
 		print "~ No PhantomJs execution path define. You can specified it with -p <path> or --phantomjs=<path>"
-
-	for opt, arg in opts:                
-		if opt in ("--phantomjs"):      
-			add_options.append('-Dphantomjs.binary.path=' + arg)
-			print "~ use phantomjs path : " + arg
-			print "~~~~~"
 
     # Run app
     test_result = os.path.join(app.path, 'test-result')
