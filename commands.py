@@ -84,6 +84,7 @@ def test(app, args):
 		for opt, arg in opts:                
 			if opt in ("--phantomjs"):      
 				add_options.append('-Dphantomjs.binary.path=' + arg)
+				args.remove(args[0])
 				print "~ use phantomjs path : " + arg
 				print "~~~~~"
 
